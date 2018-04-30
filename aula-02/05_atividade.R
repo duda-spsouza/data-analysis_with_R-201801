@@ -113,7 +113,7 @@ NAO houve
 Comparacoes com NA retornam NA
 # 3. Qual o resultado do uso da função sum na presença de NA? O que você conclui sobre a operação de soma de todos os valores de
 #    um vetor na presença de NA?
-Comparacoes com NA retornam NA
+Retorna NA.  SUM com elemento NA anula a soma de todos os outros elementos e retorna NA
 # 4. Execute o comando abaixo para ler a documentação da função sum e veja se há como modificar a chamada da função sum na presença
 #    de NAs. Teste os exemplos da página de help da função sum.
 help(sum)
