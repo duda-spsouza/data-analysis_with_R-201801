@@ -26,7 +26,7 @@
 ## ----"Dataset", message=FALSE, warning=FALSE-----------------------------
 library(tidyverse)
 
-salarios <- read_csv("aula-03/data/201802_dados_salarios_servidores.csv.gz")
+salarios <- read_csv("C:/Users/alu201830146/data-analysis_with_R-201801/aula-03/data/201802_dados_salarios_servidores.csv.gz")
 
 head(salarios, 20)
 
@@ -140,8 +140,31 @@ subset_salarios %>%
 #' Por fim, determine a média salarial por ano de ingresso.
 #' 
 ## ------------------------------------------------------------------------
+subset_salarios %>%
+  mutate (ANO_INGRESSO = year(DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO) ) -> subset_sal_tempo
+
+subset_sal_tempo %>%
+  group_by(UF_EXERCICIO) %>%
+  summarise (tempo_medio = mean(year(today()) - ANO_INGRESSO), servidores = n()) %>%
+  ungroup() %>%
+  arrange(desc(tempo_medio))
+
+subset_sal_tempo %>%
+  summarise (tempo_medio = mean(year(today()) - ANO_INGRESSO), servidores = n()) %>%
+  ungroup() %>%
+  arrange(desc(tempo_medio))
+
+
+subset_sal_tempo %>%
+  group_by(ANO_INGRESSO) %>%
+  summarise (salario_medio = mean(REMUNERACAO_REAIS), servidores = n()) %>%
+  ungroup() %>%
+  arrange(desc(ANO_INGRESSO)) 
+
+
 print("Atividade")
 ## Modificar o Dataset para criação de nova variável
+##mean(subset_salarios$REMUNERACAO_REAIS)
 
 ## Determine o tempo médio de trabalho em anos, em nível nacional
 
