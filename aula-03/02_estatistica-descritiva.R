@@ -239,7 +239,49 @@ print("Atividade")
 #' 
 #' Qual sua justificativa para a quantidade de casos onde a mediana foi maior que a média? Dica: Observe o gráfico que mostra a média e a mediana. Há cauda longa? Em qual direção?
 #' 
-#' ``` SUA RESPOSTA AQUI ```
+subset_salarios %>%
+  group_by(UF_EXERCICIO) %>%
+  summarise(vlrmedio = mean(REMUNERACAO_REAIS)
+            , servidores = n()
+            ,vlrmediana = median(REMUNERACAO_REAIS)
+            ,media_maior = vlrmedio > vlrmediana) %>%
+  ungroup() %>%
+  arrange(desc(media_maior))
+
+
+subset_salarios %>%
+  group_by(UF_EXERCICIO) %>%
+  summarise(vlrmedio = mean(REMUNERACAO_REAIS)
+            , servidores = n()
+            ,vlrmediana = median(REMUNERACAO_REAIS)
+            ,media_maior = vlrmedio > vlrmediana) %>%
+  ungroup() %>%
+  count(media_maior)
+
+  subset_salarios %>%
+  group_by(UF_EXERCICIO) %>%
+  summarise( vlrmedio = mean(REMUNERACAO_REAIS)
+             , servidores = n()
+             , vlrmediana = median(REMUNERACAO_REAIS) 
+             , media_maior = vlrmedio > vlrmediana )  %>%
+  ungroup() %>%
+  group_by(media_maior)%>%
+  summarise(total = n())%>%
+  ungroup()
+
+(subset_salarios %>%
+    group_by(UF_EXERCICIO) %>%
+    summarise( vlrmedio = mean(REMUNERACAO_REAIS)
+               , servidores = n()
+               , vlrmediana = median(REMUNERACAO_REAIS) 
+               , media_maior = vlrmedio > vlrmediana )  %>%
+    ungroup() %>%
+    group_by(media_maior)%>%
+    count(total = n()) -> subset_media_maior )
+  
+  
+  
+  
 #' 
 #' >> FIM DA ATIVIDADE
 #' 
@@ -324,8 +366,20 @@ subset_salarios %>%
 #' 
 ## ------------------------------------------------------------------------
 print("Atividade")
-
-## Código aqui
+  dois_desvios <- 2 * sd( subset_salarios$REMUNERACAO_REAIS )
+  media <- mean( subset_salarios$REMUNERACAO_REAIS )
+  dois_desvios_media <- media + dois_desvios
+  subset_salarios %>%
+    filter(REMUNERACAO_REAIS <=dois_desvios_media) %>%
+    nrow() -> total_dentro_de_dois_desvios
+  total_dentro_de_dois_desvios /nrow(subset_salarios)
+  
+  subset_salarios %>%
+    mutate(qte_abaixo_2sd = REMUNERACAO_REAIS <=dois_desvios_media
+           ,linhas <- n()) %>%
+    count(qte_abaixo_2sd)
+  
+  
 
 #' 
 #' __Atividade II__
@@ -333,6 +387,43 @@ print("Atividade")
 #' No dataset de salários temos os diferentes cargos ocupados pelos servidores públicos federais. Liste os 10 cargos de __menor coeficiente de variação__ cujo cargo tenha mais que 100 servidores públicos. A lista deve conter, além do cargo e Coeficiente de Variação, a quantidade de servidores, o menor salário, o maior salário, o salário médio e o desvio padrão.
 #' 
 ## ------------------------------------------------------------------------
+  
+  subset_salarios %>%
+    count(DESCRICAO_CARGO) %>%
+    filter(n > 100) -> cargos_populares
+  
+  subset_salarios %>%
+    filter(DESCRICAO_CARGO %in% cargos_populares$DESCRICAO_CARGO)
+  
+  subset_salarios %>%
+    group_by(DESCRICAO_CARGO)%>%
+    filter(n() > 100)%>%
+    summarise(desvio_padrao = sd(REMUNERACAO_REAIS)
+              ,media = mean(REMUNERACAO_REAIS)
+              ,cv = desvio_padrao/media
+              ,qtne_servidores = n()
+              ,max_sal = max(REMUNERACAO_REAIS)
+              ,min_sal = min(REMUNERACAO_REAIS))%>%
+    ungroup()%>%
+    arrange(cv)%>%
+    head(10)
+  
+  #MENOR 10
+  subset_salarios %>%
+    group_by(DESCRICAO_CARGO)%>%
+    filter(n() > 100)%>%
+    summarise(desvio_padrao = sd(REMUNERACAO_REAIS)
+              ,media = mean(REMUNERACAO_REAIS)
+              ,cv = desvio_padrao/media
+              ,qtne_servidores = n()
+              ,max_sal = max(REMUNERACAO_REAIS)
+              ,min_sal = min(REMUNERACAO_REAIS))%>%
+    ungroup()%>%
+    arrange(cv)%>%
+    tail(10)
+  
+  
+  
 print("Atividade")
 
 ## Código aqui
