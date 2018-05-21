@@ -169,6 +169,9 @@ print("Atividade")
 subset_com_ano <- subset_salarios %>%
   mutate(ano_ingresso = year(DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO)) 
 
+subset_com_ano <- subset_salarios %>%
+  mutate(ano_ingresso = year(DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO)) 
+
 ## Determine o tempo médio de trabalho em anos, em nível nacional
 subset_com_ano %>%
   summarise(tempo_medio = mean(year(today()) - ano_ingresso))
