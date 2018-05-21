@@ -42,8 +42,7 @@ options(encoding = "UTF-8")
 #' 
 ## ----"Dataset", message=FALSE, warning=FALSE-----------------------------
 library(tidyverse)
-
-subset_salarios <- read_csv("aula-04/data/201802_dados_salarios_servidores.csv.gz") %>%
+subset_salarios <- read_csv("C:/Users/alu201830146/data-analysis_with_R-201801/aula-04/data/201802_dados_salarios_servidores.csv.gz") %>%
   filter(REMUNERACAO_REAIS > 900, !is.na(UF_EXERCICIO)) %>%
   select(ID_SERVIDOR_PORTAL, REMUNERACAO_REAIS, DESCRICAO_CARGO, DATA_INGRESSO_ORGAO, ORGSUP_EXERCICIO, DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO, UF_EXERCICIO)
 
@@ -166,7 +165,8 @@ IQR(subset_salarios$REMUNERACAO_REAIS)
 ## ------------------------------------------------------------------------
 print("Atividade")
 
-## Código aqui
+
+
 
 #' 
 #' __Atividade II__
