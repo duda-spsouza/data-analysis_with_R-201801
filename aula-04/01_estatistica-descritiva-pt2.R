@@ -165,8 +165,10 @@ IQR(subset_salarios$REMUNERACAO_REAIS)
 ## ------------------------------------------------------------------------
 print("Atividade")
 
-
-
+(desvabm_salario <- median( abs( subset_salarios$REMUNERACAO_REAIS - median( subset_salarios$REMUNERACAO_REAIS ))))
+(md_salario <- median( subset_salarios$REMUNERACAO_REAIS ))
+(abs_dev <- desvabm / md_salario)
+(raz_iqr_desv <- iqr_remuneracao / abs_dev)
 
 #' 
 #' __Atividade II__
