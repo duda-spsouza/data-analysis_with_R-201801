@@ -263,6 +263,17 @@ pgeom(6, prob=0.1, lower.tail = TRUE)
 #' 
 #' 1. Faça o gráfico da distribuição de probabilidades de chamadas telefônicas até 20 ligações e simule 500 eventos de Bernoulli para esta mesma probabilidade. Nesta simulação, identifique quantas sequências de 6 falhas ocorreram. Use como _seed_ os últimos 5 dígitos da sua matrícula. Veja no exemplo anterior o uso da função `rle`.
 #' 
+#' 
+
+df_geom_probs <- data_frame(x = 0:20, y=pgeom(0:20, prob = 0.1) * 100)
+
+ggplot(df_geom_probs, aes(x=x, y=y)) +
+  geom_col() +
+  scale_x_continuous(name = "Tentativas de atender", breaks=0:20) +
+  scale_y_continuous(name = "Prob (%)", breaks=seq(from=0, to=50, by=5)) +
+  theme_light()
+
+#' 
 #' 2. Você criou um sistema para reclamações da demora do atendimento de ligações telefônicas durante quedas de conectividade da Internet, e exige que os usuários acertem um CAPTCHA antes de postarem uma reclamação. Você observou que a probabilidade de um usuário acertar o CAPTCHA exibido no seu sistema é de 70%. 
 #' 
 #' - Seu sistema de monitoramento identificou que um usuário tentou 5 CAPTCHAS diferentes antes de conseguir reclamar do tempo de atendimento na última queda de conectividade. 
@@ -270,6 +281,11 @@ pgeom(6, prob=0.1, lower.tail = TRUE)
 #'     
 #'     + Você observou que, das últimas 500 _tentativas_ de publicação de reclamações, 340 acertaram a validação de CAPTCHA. Qual a probabilidade de uma quantidade entre 320 e 350 tentativas passarem pela validação de CAPTCHA a cada 500 tentativas? Dada a probabilidade de 70% de sucesso, qual o número esperado de publicações a cada 500 CAPTCHAS? DICA: ESTAMOS TRATANDO DA DISTRIBUIÇÃO BINOMIAL.
 #' 
+#' 
+
+
+
+
 #' >> FIM ATIVIDADE
 #' 
 #' ### Variáveis aleatórias contínuas
