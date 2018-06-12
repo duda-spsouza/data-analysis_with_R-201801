@@ -2,7 +2,7 @@
 # install.packages("RSQLite")
 
 # Banco de Dados Relacional e Colunar de propósito analítico, embutido
-# install.packages("MonetDBLite")
+ install.packages("MonetDBLite")
 
 # Biblioteca para objetos JSON
 # install.packages("jsonlite")
@@ -23,11 +23,21 @@ ted_main <- ted_talks %>%
 ted_ratings <- ted_talks %>%
   select( url, ratings ) %>%
   mutate( ratings = map( ratings, ~ jsonlite::fromJSON( str_replace_all( .x, "'", '"' )))) %>%
-  unnest( ratings ) %>%
+  unnest( ratings ) 
+
+ted_ratings %>%
+  select( id,name ) %>%
+  distinct()
+
+ted_ratings <- ted_ratings %>%
   select( -id ) %>%
   rename( category = name ) %>%
-  filter( count > 0 ) %>%
-  rename( count_ratings = count ) %>%
+  filter( count > 0 ) 
+
+ted_ratings <- ted_ratings %>%
+  rename( count_ratings = count )
+
+ted_ratings <- ted_ratings %>%
   group_by( url ) %>%
   mutate(rating_ratio = count_ratings / sum( count_ratings, na.rm = TRUE )) %>%
   ungroup()
@@ -41,6 +51,9 @@ my_db <- MonetDBLite::src_monetdblite(dbdir)
 
 # Cria tabela temporária com ted_ratings
 tb_ted_ratings <- copy_to(my_db, df = ted_ratings, name = "ted_ratings_tmp", overwrite = TRUE, temporary = TRUE)
+
+summary(ted_ratings)
+summary(tb_ted_ratings)
 
 # Cria tabela temporária com ted_main
 tb_ted_main <- copy_to(my_db, df = ted_main, name = "ted_main_tmp", overwrite = TRUE, temporary = TRUE)
@@ -62,8 +75,8 @@ tb_ted_main %>%
 show_query( tb_ted_main )
 
 # Grava ted_main com novas colunas
-tb_ted_main    <- copy_to( my_db, tb_ted_main, name = "ted_main", overwrite = TRUE, temporary = FALSE )
-tb_ted_ratings <- copy_to( my_db, tb_ted_ratings, name = "ted_ratings", overwrite = TRUE, temporary = FALSE )
+tb_ted_main    <- copy_to( my_db, tb_ted_main, name = "ted_main_AULA", overwrite = TRUE, temporary = FALSE )
+tb_ted_ratings <- copy_to( my_db, tb_ted_ratings, name = "ted_ratings_AULA", overwrite = TRUE, temporary = FALSE )
 
 # Encerra conexão
 MonetDBLite::monetdblite_shutdown()
@@ -75,10 +88,11 @@ rm(my_db, tb_ted_main, tb_ted_ratings, ted_defining_category, ted_main, ted_rati
 dbdir <- "aula-08/data/monetdb/ted"
 my_db_new_conn <- MonetDBLite::src_monetdblite(dbdir)
 
-teds <- tbl( my_db_new_conn, "ted_main" )
+teds <- tbl( my_db_new_conn, "ted_main_AULA" )
 
 head(teds, 10)
 
 head(teds, 10) %>% show_query()
 
 MonetDBLite::monetdblite_shutdown()
+
