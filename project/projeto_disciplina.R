@@ -101,19 +101,68 @@ tb_tudo%>%
 
 #7 # Identifique os 5 horários com maior quantidade de usuários que fizeram pedidos
 
+tb_tudo %>%
+  group_by(order_hour_of_day) %>%
+  summarise(count_user_id = n_distinct(user_id)) %>%
+  arrange(desc(count_user_id)) %>%
+  head(n = 5) %>%
+  ungroup() -> cinco_hour_day
+
 
 #8 # Quais os 15 produtos mais vendidos nestes 5 horários? Identifique os produtos e a quantidade total nestes horários (total geral, não por hora)
 
+tb_tudo %>%
+  inner_join(cinco_hour_day, by = 'order_hour_of_day') %>%
+  group_by(product_id, product_name) %>%
+  summarise(qtd = n()) %>%
+  arrange(desc(qtd)) %>%
+  head(15) -> top_products
 
 #9 # Calcule a média de vendas por hora destes 15 produtos ao longo do dia,
    # e faça um gráfico de linhas mostrando a venda média por hora destes produtos. 
    # Utilize o nome do produto para legenda da cor da linha.
    # Você consegue identificar algum produto com padrão de venda diferente dos demais? 
 
+top_products %>%
+  inner_join(tb_tudo, by = 'product_id') %>%
+  inner_join(products, by = 'product_id') %>%
+  group_by(product_id, product_name, order_hour_of_day, order_dow) %>%
+  summarise(qtd_hora = n()) %>%
+  ungroup() %>%
+  group_by(product_id, product_name, order_hour_of_day) %>%
+  summarise(media_qtd_hora = mean(qtd_hora)) %>%
+  ungroup()  %>% View() -> ordens_produto_hora 
+
+library(ggplot2)
+
+ggplot(data = ordens_produto_hora,
+       aes(x = order_hour_of_day,
+           y = media_qtd_hora,
+           group = product_name)
+) +
+  geom_line(aes(color = product_name)) +
+  geom_point(aes(color = product_name)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 30, by = 2)) +
+  labs(x = 'Hora',
+       y = 'Quant',
+       title = 'Top 15 Produtos por Hora',
+       colour = 'Produtos')
+
 
 #10 # Calcule as seguintes estatísticas descritivas sobre a quantidade de pedidos por dia, para cada hora do dia. O resultado final deve ser exibido para cada hora do dia:
     # Média, Desvio Padrão, Mediana, Mínimo e Máximo
     # Considerando os valores calculados, você acredita que a distribuição por hora é gaussiana? 
+
+tb_tudo %>%
+  group_by(order_dow, order_hour_of_day) %>%
+  summarise(qtd_hora = n_distinct(order_id)) %>%
+  group_by(order_hour_of_day) %>%
+  summarise(media = mean(qtd_hora),
+            desvio_padrao = sd(qtd_hora),
+            mediana = median(qtd_hora),
+            minimo = min(qtd_hora),
+            maximo = max(qtd_hora)) %>%
+  ungroup()
 
 
 #11 # Faça um gráfico da média de quantidade de produtos por hora, com 1 desvio padrão para cima e para baixo em forma de gráfico de banda
