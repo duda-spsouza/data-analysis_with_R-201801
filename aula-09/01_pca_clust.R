@@ -68,6 +68,15 @@ ted_tags %>%
   count( tag ) %>%
   arrange( desc( n )) 
 
+
+ted_tags %>%
+  count( tag ) %>%
+  filter( between(n , 6 , 418)) -> tags_remover
+
+ted_tags %>%
+  semi_join( tags_remover, by = "tag") ->ted_tags
+
+
 #' 
 #' 
 ## ------------------------------------------------------------------------
@@ -174,7 +183,7 @@ ted_data %>%
 #' 
 ## ------------------------------------------------------------------------
 ### INSTALAR ESTA PACKAGE ###
-#install.packages("irlba")   # Package de melhor desempenho para tarefas de componentes principais
+install.packages("irlba")   # Package de melhor desempenho para tarefas de componentes principais
 
 tags_pca <- irlba::prcomp_irlba(tags_scaled, n = 16)
 
